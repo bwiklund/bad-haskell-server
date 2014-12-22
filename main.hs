@@ -1,11 +1,16 @@
 import qualified Data.Map as Map
 
-data Request = Request { headers :: Map.Map String String, url :: String } deriving (Show)
+data Request = Request {
+  url :: String,
+  method :: String,
+  headers :: Map.Map String String
+} deriving (Show)
 
 parseRequest str =
   let headers = Map.fromList [("foo","bar")]
       url = str
-      in Request headers url
+      method = "GET"
+      in Request url method headers
 
 main = do
   requestStr <- readFile "test/request.txt"
