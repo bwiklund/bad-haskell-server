@@ -14,14 +14,9 @@ splitHeaderLine line =
   let parts = splitOn ": " line
    in Just (parts !! 0, parts !! 1)
 
-parseRequest str =
+fromStr str =
   let headerLines = tail $ lines str
       headers = Map.fromList $ catMaybes $ map splitHeaderLine headerLines
       url = (words str) !! 1
       method = (words str) !! 0
    in Request url method headers
-
-main = do
-  requestStr <- readFile "test/request.txt"
-  let request = parseRequest requestStr
-  putStrLn $ show request

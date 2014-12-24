@@ -5,6 +5,6 @@ import System.Environment (getArgs)
 main = do
   args <- getArgs
   let port = read $ head args :: Int
-  listen port fooHandler
+  listen port echoHandler
 
-fooHandler request = "200 OK\n\nwelp."
+echoHandler request = "You sent: \n\n" ++ request ++ "\n\nCordially,\n  Haskell"
