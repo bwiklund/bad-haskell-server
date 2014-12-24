@@ -28,8 +28,7 @@ readUntilEmptyLine handle acc = do
 
 fromHandle handle = do
   requestLines <- readUntilEmptyLine handle []
-  let headerLines = tail requestLines
+  let (requestLine:headerLines) = requestLines
+      (url:method:_) = words requestLine
       headers = Map.fromList $ catMaybes $ map splitHeaderLine headerLines
-      url = "foo" -- (words str) !! 1
-      method = "bar" -- (words str) !! 0
    in return (Request url method headers)
