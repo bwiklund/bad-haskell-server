@@ -1,13 +1,13 @@
+module Server where
+
 import Network (listenOn, withSocketsDo, accept, PortID(..), Socket)
-import System.Environment (getArgs)
 import System.IO (hSetBuffering, hGetLine, hPutStrLn, hClose, BufferMode(..), Handle)
 import Control.Concurrent (forkIO)
 
-main :: IO ()
-main = withSocketsDo $ do
-  args <- getArgs
-  let port = fromIntegral (read $ head args :: Int)
-  sock <- listenOn $ PortNumber port
+listen :: Int -> IO ()
+listen port = withSocketsDo $ do
+  sock <- listenOn $ PortNumber $ fromIntegral port
+  putStrLn "listening"
   sockHandler sock
 
 sockHandler :: Socket -> IO ()
