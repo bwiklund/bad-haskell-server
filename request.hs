@@ -6,7 +6,7 @@ import Data.Maybe
 import System.IO (hSetBuffering, hGetLine, hPutStrLn, hPutStr, hIsEOF, hClose, BufferMode(..), Handle)
 
 data Request = Request {
-  url :: String,
+  uri :: String,
   method :: String,
   headers :: Map.Map String String
 } deriving (Show)
@@ -19,9 +19,10 @@ splitHeaderLine line =
 
 readUntilEmptyLine handle acc = do
   eof <- hIsEOF handle
-  if eof then return (acc)
+  if eof then return (reverse acc)
     else do
       line <- hGetLine handle
+      -- putStrLn $ show $ map show (line :: [Char]) -- for debugging /r and /n
       case line of
         "\r" -> return (reverse acc) -- TODO: this is because chrome sends \r\n. handle this more elegantly
         _ -> readUntilEmptyLine handle (line:acc)
@@ -29,6 +30,6 @@ readUntilEmptyLine handle acc = do
 fromHandle handle = do
   requestLines <- readUntilEmptyLine handle []
   let (requestLine:headerLines) = requestLines
-      (url:method:_) = words requestLine
+      (method:uri:_) = words requestLine
       headers = Map.fromList $ catMaybes $ map splitHeaderLine headerLines
-   in return (Request url method headers)
+   in return (Request uri method headers)

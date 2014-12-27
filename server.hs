@@ -5,7 +5,7 @@ import Control.Concurrent (forkIO)
 import System.IO (hSetBuffering, hGetLine, hPutStrLn, hPutStr, hIsEOF, hClose, BufferMode(..), Handle)
 import Request
 
-type Handler = (IO Request -> IO String)
+type Handler = (Request -> IO String)
 
 -- starts a server
 listen :: Int -> Handler -> IO ()
@@ -25,7 +25,7 @@ sockHandler sock handler = do
 -- entry point for a request. parses headers and passes the request to the user's handler
 requestHandler :: Handle -> Handler -> IO ()
 requestHandler handle handler = do
-  let request = fromHandle handle
+  request <- fromHandle handle
   response <- handler request
   hPutStr handle response
   hClose handle

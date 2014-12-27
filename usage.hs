@@ -2,25 +2,26 @@ import Server
 import Request
 
 import System.Environment (getArgs)
+import Text.Regex.Posix
+import Data.List (find)
 
 main = do
   args <- getArgs
   let port = read $ head args :: Int
   listen port router
 
+type Matcher = (String, Handler)
+
 matchers = [("/echo", echoHandler)]
 
 router :: Handler
 router request = do
-  (snd $ head matchers) request
+  let matchedHandler = find (\(re,_) -> (uri request) =~ re :: Bool) matchers
+  case matchedHandler of
+    Just handler -> (snd handler) request
+    Nothing -> return ("HTTP/1.1 404 Non Found\nContent-Type: text/plain\n\n404 Can't Even")
 
 echoHandler :: Handler
 echoHandler request = do
-  response <- request
-  return ("You sent: \n\n" ++ (show response) ++ "\n\nCordially,\n  Haskell")
-
-type Matcher = (String, Handler)
-
-routeRequest :: [Matcher] -> Request -> IO String
-routeRequest router request = do
-  return ("hello this is router")
+  let response = request
+  return ("HTTP/1.1 200 OK\nContent-Type: text/plain\n\nYou sent: \n\n" ++ (show response) ++ "\n\nCordially,\n  Haskell")
