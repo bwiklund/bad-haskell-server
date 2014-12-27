@@ -11,7 +11,7 @@ data Response = Response {
 statusCodes =
   Map.fromList [
     (200, "OK"),
-    (400, "Not found"),
+    (404, "Not found"),
     (500, "Server error")
   ]
 

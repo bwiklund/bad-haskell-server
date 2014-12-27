@@ -14,8 +14,8 @@ data Request = Request {
 splitHeaderLine :: String -> Maybe (String, String)
 splitHeaderLine "" = Nothing
 splitHeaderLine line =
-  let parts = splitOn ": " line
-   in Just (parts !! 0, parts !! 1)
+  let (k:v:_) = splitOn ": " line
+   in Just (k, v)
 
 readUntilEmptyLine handle acc = do
   eof <- hIsEOF handle
