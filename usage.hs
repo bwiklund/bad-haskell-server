@@ -3,15 +3,13 @@ import Router
 import Response
 
 import System.Environment (getArgs)
-import qualified Data.Map
+import qualified Data.Map as Map
 
 fooRouter = Router [("/echo", echoHandler)]
 
-echoHandler :: Handler
 echoHandler request = do
-  let response = request
-      body = "You sent: \n\n" ++ (show response) ++ "\n\nCordially,\n  Haskell"
-  return (Response 200 Data.Map.empty body)
+  let body = "You sent: \n\n" ++ (show request) ++ "\n\nCordially,\n  Haskell"
+  return (Response 200 Map.empty body)
 
 main = do
   args <- getArgs

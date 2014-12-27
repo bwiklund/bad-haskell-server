@@ -1,9 +1,9 @@
 module Request where
 
 import qualified Data.Map as Map
-import Data.List.Split
+import Data.List.Split (splitOn)
 import Data.Maybe
-import System.IO (hSetBuffering, hGetLine, hPutStrLn, hPutStr, hIsEOF, hClose, BufferMode(..), Handle)
+import System.IO (hGetLine, hIsEOF)
 
 data Request = Request {
   uri :: String,

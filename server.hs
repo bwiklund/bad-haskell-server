@@ -1,10 +1,11 @@
 module Server where
 
-import Network (listenOn, withSocketsDo, accept, PortID(..), Socket)
-import Control.Concurrent (forkIO)
-import System.IO (hSetBuffering, hGetLine, hPutStrLn, hPutStr, hIsEOF, hClose, BufferMode(..), Handle)
 import Request
 import Response
+
+import Network (listenOn, withSocketsDo, accept, PortID(..), Socket)
+import Control.Concurrent (forkIO)
+import System.IO (hSetBuffering, hPutStr, hClose, BufferMode(..), Handle)
 
 type Handler = (Request -> IO Response)
 
