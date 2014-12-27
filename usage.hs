@@ -1,7 +1,9 @@
 import Server
 import Router
+import Response
 
 import System.Environment (getArgs)
+import qualified Data.Map
 
 fooRouter = Router [("/echo", echoHandler)]
 
@@ -13,4 +15,4 @@ main = do
 echoHandler :: Handler
 echoHandler request = do
   let response = request
-  return ("HTTP/1.1 200 OK\nContent-Type: text/plain\n\nYou sent: \n\n" ++ (show response) ++ "\n\nCordially,\n  Haskell")
+  return (Response 200 Data.Map.empty ("You sent: \n\n" ++ (show response) ++ "\n\nCordially,\n  Haskell"))

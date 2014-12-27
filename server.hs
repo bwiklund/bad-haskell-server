@@ -4,8 +4,9 @@ import Network (listenOn, withSocketsDo, accept, PortID(..), Socket)
 import Control.Concurrent (forkIO)
 import System.IO (hSetBuffering, hGetLine, hPutStrLn, hPutStr, hIsEOF, hClose, BufferMode(..), Handle)
 import Request
+import Response
 
-type Handler = (Request -> IO String)
+type Handler = (Request -> IO Response)
 
 -- starts a server
 listen :: Int -> Handler -> IO ()
@@ -27,5 +28,5 @@ requestHandler :: Handle -> Handler -> IO ()
 requestHandler handle handler = do
   request <- fromHandle handle
   response <- handler request
-  hPutStr handle response
+  hPutStr handle $ toString response
   hClose handle
