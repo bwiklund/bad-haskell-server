@@ -4,7 +4,7 @@ import Response
 
 import System.Environment (getArgs)
 import qualified Data.Map as Map
-import qualified System.Time as Time
+import Data.Time (UTCTime, getCurrentTime)
 
 fooRouter = Router [
     ("/echo", echoHandler),
@@ -16,7 +16,7 @@ echoHandler request =
    in return (Response 200 Map.empty body)
 
 timeHandler request = do
-  now <- Time.getClockTime
+  now <- getCurrentTime
   return (Response 200 Map.empty $ show now)
 
 main = do
