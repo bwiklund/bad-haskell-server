@@ -6,16 +6,17 @@ import Data.Maybe
 import System.IO (hGetLine, hIsEOF)
 
 data Request = Request {
-  uri :: String,
   method :: String,
+  uri :: String,
   headers :: Map.Map String String
-} deriving (Show)
+} deriving (Show, Eq)
 
 splitHeaderLine :: String -> Maybe (String, String)
 splitHeaderLine "" = Nothing
+splitHeaderLine "\r" = Nothing
 splitHeaderLine line =
-  let (k:v:_) = splitOn ": " line
-   in Just (k, v)
+  let (x:xs) = splitOn ": " line
+   in Just (x, head xs)
 
 -- TODO: treat as chars, not lines?
 readUntilEmptyLine handle acc = do
@@ -28,13 +29,14 @@ readUntilEmptyLine handle acc = do
         "\r" -> return (unlines $ reverse acc) -- TODO: this is because chrome sends \r\n. handle this more elegantly
         _ -> readUntilEmptyLine handle (line:acc)
 
+-- TODO: instance Read here?
 fromString :: String -> Request
 fromString str =
   let (requestLine:headerLines) = lines str
       (method:uri:_) = words requestLine
       headers = Map.fromList $ catMaybes $ map splitHeaderLine headerLines
-   in Request uri method headers
+   in Request method uri headers
 
 fromHandle handle = do
   str <- readUntilEmptyLine handle []
-  return (fromString str)
+  return $ fromString str

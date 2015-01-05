@@ -3,19 +3,29 @@ version:             0.1.0.0
 build-type:          Simple
 cabal-version:       >=1.8
 
-executable demo
-  main-is:           Usage.hs
+library
+  hs-source-dirs:    src
   build-depends:     base
                    , time
                    , containers
                    , regex-posix
                    , split
                    , network
-  hs-source-dirs:    src
+  exposed-modules:   Request, Response, Router, Server
 
-test-suite spec
-  type:              exitcode-stdio-1.0
+executable demo
+  hs-source-dirs:    demo
   main-is:           Main.hs
   build-depends:     base
+                   , bad-haskell-server
+                   , time
+                   , containers
+
+test-suite spec
+  hs-source-dirs:    test
+  main-is:           Main.hs
+  type:              exitcode-stdio-1.0
+  build-depends:     base
+                   , bad-haskell-server
                    , HUnit
-  hs-source-dirs:    test, src
+                   , containers

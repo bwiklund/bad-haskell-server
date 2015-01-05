@@ -1,3 +1,5 @@
+module Main where
+
 import Server
 import Router
 import Response
