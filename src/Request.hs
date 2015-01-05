@@ -17,19 +17,24 @@ splitHeaderLine line =
   let (k:v:_) = splitOn ": " line
    in Just (k, v)
 
+-- TODO: treat as chars, not lines?
 readUntilEmptyLine handle acc = do
   eof <- hIsEOF handle
-  if eof then return (reverse acc)
+  if eof then return (unlines $ reverse acc)
     else do
       line <- hGetLine handle
       -- putStrLn $ show $ map show (line :: [Char]) -- for debugging /r and /n
       case line of
-        "\r" -> return (reverse acc) -- TODO: this is because chrome sends \r\n. handle this more elegantly
+        "\r" -> return (unlines $ reverse acc) -- TODO: this is because chrome sends \r\n. handle this more elegantly
         _ -> readUntilEmptyLine handle (line:acc)
 
-fromHandle handle = do
-  requestLines <- readUntilEmptyLine handle []
-  let (requestLine:headerLines) = requestLines
+fromString :: String -> Request
+fromString str =
+  let (requestLine:headerLines) = lines str
       (method:uri:_) = words requestLine
       headers = Map.fromList $ catMaybes $ map splitHeaderLine headerLines
-   in return (Request uri method headers)
+   in Request uri method headers
+
+fromHandle handle = do
+  str <- readUntilEmptyLine handle []
+  return (fromString str)
