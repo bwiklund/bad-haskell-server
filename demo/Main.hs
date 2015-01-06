@@ -9,8 +9,8 @@ import qualified Data.Map as Map
 import Data.Time (getCurrentTime)
 
 fooRouter = Router [
-    ("/echo", echoHandler),
-    ("/time", timeHandler)
+    ("^/echo", echoHandler),
+    ("^/time", timeHandler)
   ]
 
 echoHandler request =

@@ -7,7 +7,7 @@ import Request
 import Response
 import Router
 
-testMatcher = ("/", (\request -> return $ Response 200 Map.empty "bar"))
+testMatcher = ("^/$", (\request -> return $ Response 200 Map.empty "bar"))
 testRouter = Router [testMatcher]
 
 tests = TestList [
@@ -24,7 +24,11 @@ tests = TestList [
 
     TestCase (do
       response <- routeRequest testRouter (Request "GET" "/" Map.empty)
-      assertEqual "simplest routing" "bar" (body response))
+      assertEqual "simplest routing" "bar" (body response)),
+
+    TestCase (do
+      response <- routeRequest testRouter (Request "GET" "/foo" Map.empty)
+      assertEqual "404s on routing failure" 404 (status response))
 
   ]
 
