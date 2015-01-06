@@ -4,11 +4,20 @@ import Test.HUnit
 import qualified Data.Map as Map
 
 import Request
-
-sampleRequest = "GET / HTTP/1.1\r\nHost: daisyowl.com\r\n\r\n"
+import Response
 
 tests = TestList [
-    TestCase $ assertEqual "simplest request" (Request "GET" "/" (Map.fromList [("Host", "daisyowl.com")])) (fromString sampleRequest)
+
+    TestCase $ assertEqual
+      "simplest request"
+      (Request "GET" "/" (Map.fromList [("Host", "daisyowl.com")]))
+      (fromString "GET / HTTP/1.1\r\nHost: daisyowl.com\r\n\r\n"),
+
+    TestCase $ assertEqual
+      "simplest response"
+      "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nOh hai there"
+      (toString $ Response 200 (Map.fromList [("Content-type", "text/plain")]) "Oh hai there")
+
   ]
 
 main = do
