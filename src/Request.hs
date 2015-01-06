@@ -11,9 +11,11 @@ data Request = Request {
   headers :: Map.Map String String
 } deriving (Show, Eq)
 
+-- used both in the IO code and pure code, for simplicty with running / test suite
+filterCrs = filter (/='\r')
+
 splitHeaderLine :: String -> Maybe (String, String)
 splitHeaderLine "" = Nothing
-splitHeaderLine "\r" = Nothing
 splitHeaderLine line =
   let (x:xs) = splitOn ": " line
    in Just (x, head xs)
@@ -23,7 +25,8 @@ readUntilEmptyLine handle acc = do
   eof <- hIsEOF handle
   if eof then return (unlines $ reverse acc)
     else do
-      line <- hGetLine handle
+      rawLine <- hGetLine handle
+      let line = filterCrs rawLine
       case line of
         "" -> return (unlines $ reverse acc)
         _ -> readUntilEmptyLine handle (line:acc)
@@ -31,7 +34,7 @@ readUntilEmptyLine handle acc = do
 -- TODO: instance Read here?
 fromString :: String -> Request
 fromString str =
-  let filteredStr = filter (/='\r') str
+  let filteredStr = filterCrs str
       (requestLine:headerLines) = lines filteredStr
       (method:uri:_) = words requestLine
       headers = Map.fromList $ catMaybes $ map splitHeaderLine headerLines
