@@ -7,7 +7,7 @@ import Network (listenOn, withSocketsDo, accept, PortID(..), Socket)
 import Control.Concurrent (forkIO)
 import System.IO (hSetBuffering, hPutStr, hClose, BufferMode(..), Handle)
 
-type Handler = (Request -> IO Response)
+type Handler = Request -> IO Response
 
 -- starts a server
 listen :: Int -> Handler -> IO ()

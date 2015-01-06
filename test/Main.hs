@@ -5,6 +5,10 @@ import qualified Data.Map as Map
 
 import Request
 import Response
+import Router
+
+testMatcher = ("/", (\request -> return $ Response 200 Map.empty "bar"))
+testRouter = Router [testMatcher]
 
 tests = TestList [
 
@@ -16,7 +20,11 @@ tests = TestList [
     TestCase $ assertEqual
       "simplest response"
       "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nOh hai there"
-      (toString $ Response 200 (Map.fromList [("Content-type", "text/plain")]) "Oh hai there")
+      (toString $ Response 200 (Map.fromList [("Content-type", "text/plain")]) "Oh hai there"),
+
+    TestCase (do
+      response <- routeRequest testRouter (Request "GET" "/" Map.empty)
+      assertEqual "simplest routing" "bar" (body response))
 
   ]
 
