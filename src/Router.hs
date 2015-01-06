@@ -11,8 +11,10 @@ import qualified Data.Map as Map
 type Matcher = (String, Handler)
 data Router = Router {matchers :: [Matcher]}
 
+findMatcherForRequest router request =
+  find (\(re,_) -> (uri request) =~ re :: Bool) (matchers router)
+
 routeRequest router request =
-  let matchedHandler = find (\(re,_) -> (uri request) =~ re :: Bool) (matchers router)
-   in case matchedHandler of
-      Just handler -> (snd handler) request
-      Nothing -> return (Response 404 Map.empty "I can't even")
+  case findMatcherForRequest router request of
+    Just handler -> (snd handler) request
+    Nothing -> return (Response 404 Map.empty "I can't even")
