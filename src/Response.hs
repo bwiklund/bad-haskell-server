@@ -2,6 +2,7 @@ module Response where
 
 import qualified Data.Map as Map
 import Data.List (intercalate)
+import Data.Maybe
 
 data Response = Response {
   status :: Int,
@@ -19,9 +20,7 @@ statusCodes =
   ]
 
 lookupStatusMessage code =
-  case (Map.lookup code statusCodes) of
-    Nothing -> "Shrug"
-    Just message -> message
+  fromMaybe "Unknown status code" (Map.lookup code statusCodes)
 
 headersToString headers =
   let headerToString (k,v) = k ++ ": " ++ v
